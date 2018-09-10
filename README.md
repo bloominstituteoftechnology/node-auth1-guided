@@ -1,2 +1,1 @@
-# authmini
-Mini project for Authentication Sprint
+# Mini project for Authentication Sprint
