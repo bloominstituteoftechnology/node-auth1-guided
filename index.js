@@ -1,10 +1,25 @@
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const session = require("express-session");
 
 const db = require("./database/dbConfig.js");
 
 const server = express();
+
+const sessionsConfig = {
+  name: "monkey", // default is connect.sid
+  secret: "nobody tosses a dwarf!",
+  cookie: {
+    maxAge: 1 * 24 * 60 * 60 * 1000, // a day
+    secure: false, // only set cookies over https. Server will not send back a cookie over http.
+  }, // 1 day in milliseconds
+  httpOnly: true, // don't let JS code access cookies. Browser extensions run JS code on your browser!
+  resave: false,
+  saveUninitialized: false
+};
+
+server.use(session(sessionsConfig));
 
 server.use(express.json());
 server.use(cors());
@@ -46,7 +61,7 @@ server.post("/api/login", (req, res) => {
     .first()
     .then(user => {
       if (user && bcrypt.compareSync(creds.password, user.password)) {
-        res.status(200).send('Welcome');
+        res.status(200).send("Welcome");
       } else {
         res.status(401).json({ Error: "Cannot Authorize" });
       }
@@ -55,6 +70,16 @@ server.post("/api/login", (req, res) => {
       console.log(err);
       res.status(500).json({ Error: "Login Failed" });
     });
+});
+
+server.get("/setname", (req, res) => {
+  req.session.name = "Frodo";
+  res.send("got it");
+});
+
+server.get("/greet", (req, res) => {
+  const name = req.session.name;
+  res.send(`hello ${req.session.name}`);
 });
 
 // protect this route, only authenticated users should see it
