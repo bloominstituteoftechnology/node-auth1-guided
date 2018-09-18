@@ -33,8 +33,9 @@ server.use(session(sessionsConfig));
 server.use(express.json());
 server.use(cors());
 
+// middleware
 function protected(req, res, next) {
-  if (req.session && req.session.userId) {
+  if (req.session && req.session.username) {
     next();
   } else {
     res.status(401).json({ Error: "You shall not pass!!" });
@@ -152,13 +153,13 @@ server.get("/api/admins", protected, (req, res) => {
   }
 });
 
-server.get('/api/logout', (req, res) => {
+server.get("/api/logout", (req, res) => {
   if (req.session) {
     req.session.destroy(err => {
       if (err) {
-        res.send('error logging out');
+        res.send("error logging out");
       } else {
-        res.send('good bye');
+        res.send("good bye");
       }
     });
   }
