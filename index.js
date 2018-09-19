@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
-// require your story library
+const jwt = require("jsonwebtoken");
+// require your story library //
 const KnexSessionStore = require("connect-session-knex")(session);
 
 const db = require("./database/dbConfig.js");
@@ -33,12 +34,48 @@ server.use(session(sessionsConfig));
 server.use(express.json());
 server.use(cors());
 
+const secret = "seecret";
 // middleware
+function generateToken(user) {
+  const payload = {
+    username: user.username
+  };
+  const options = {
+    expiresIn: "1h",
+    jwtid: "12345" // jti
+  };
+  return jwt.sign(payload, secret, options);
+}
+
+// function protected(req, res, next) {
+//   if (req.session && req.session.username) {
+//     next();
+//   } else {
+//     res.status(401).json({ Error: "You shall not pass!!" });
+//   }
+// }
+
 function protected(req, res, next) {
-  if (req.session && req.session.username) {
-    next();
+  // use jwts instead of sessions
+  // read the token string from the Authorization header
+  const token = req.headers.authorization;
+
+  if (token) {
+    // verify the token
+    jwt.verify(token, secret, (err, decodedToken) => {
+      if (err) {
+        // token is invalid
+        res.status(401).json({ Error: "Invalid Token" });
+      } else {
+        // token is valid
+        console.log("DecodedToken: ", decodedToken);
+        req.username = decodedToken.username;
+        //req.user = { username: decodedToken.username };
+        next();
+      }
+    });
   } else {
-    res.status(401).json({ Error: "You shall not pass!!" });
+    res.status(401).json({ Error: "No token provided" });
   }
 }
 
@@ -61,7 +98,22 @@ server.post("/api/register", (req, res) => {
     .insert(creds)
     .then(ids => {
       const id = ids[0];
-      res.status(200).json(id);
+
+      // find the user using the id
+      db("users")
+        .where({ id })
+        .first()
+        .then(user => {
+          // generate token
+          const token = generateToken(user);
+          // attach token to response
+          res.status(200).json({ id: user.id, token });
+        })
+        .catch(err => {
+          console.log("Error: ", err);
+          res.status(500).json({ Error: "no users" });
+        });
+      //.catch(err => res.status(500).send(err));//
       // return 200
     })
     .catch(err => {
@@ -79,6 +131,10 @@ server.post("/api/login", (req, res) => {
     .first()
     .then(user => {
       if (user && bcrypt.compareSync(creds.password, user.password)) {
+        // generate token
+        const token = generateToken(user);
+        // attach token to response
+        res.status(200).json({ id: user.id, token });
         // grab roles from user
         // req.session.roles = roles;
         req.session.username = user.username;
