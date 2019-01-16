@@ -22,4 +22,8 @@ server.get('/api/users', (req, res) => {
     .catch(err => res.send(err));
 });
 
+server.post('api/register', (req,res) => {
+    
+})
+
 server.listen(3300, () => console.log('\nrunning on port 3300\n'));
