@@ -24,18 +24,11 @@ server.get('/', (req, res) => {
   res.send('Its Alive!');
 });
 
-// protect this route, only authenticated users should see it
-server.get('/api/users', (req, res) => {
-  db('users')
-    .select('id', 'username')
-    .then(users => {
-      res.json(users);
-    })
-    .catch(err => res.send(err));
-});
+
 
 server.post('/api/register', (req,res) => {
     const user = req.body;
+    console.log('session', req.session);
     user.password = bcrypt.hashSync(user.password, 10);
     if(!user) res.status(400).json({Message: `Please enter a valid user name and password`});
     console.log(user);
@@ -53,6 +46,10 @@ server.post('/api/login', (req,res) => {
     db.findByUsername(userBody.username)
     .then( users => {
        if(users.length && bcrypt.compareSync(userBody.password, users[0].password)) {
+          req.session.userId = users[0].id;
+          //redirect to the login screen
+          // we send back  info that allows the front end  to display a new error message.
+
           res.status(200).json({Message: `Correct`});
        } else {
           res.status(404).json({Message: `Invalid username and password`});
@@ -63,5 +60,42 @@ server.post('/api/login', (req,res) => {
     })
      
 });
+
+// protect this route, only authenticated users should see it
+server.get('/api/users', (req, res) => {
+    console.log('session', req.session);
+    if(req.session && req.session.userId) {
+           db.findUsers()
+             .then( users => {
+                res.status(200).json(users)
+             })
+             .catch(err => {
+                 res.status(500).json({errorMessage: err});
+             })
+    } else {
+        res.status(400).json({Message: `Access denied`});
+    }
+   // db('users')
+   //   .select('id', 'username')
+   //   .then(users => {
+   //     res.json(users);
+   //   })
+   //   .catch(err => res.send(err));
+ });
+
+ server.post('/api/logout', (req,res) => {
+         req.session.destroy( err => {
+             if(err) {
+                res.status(500).send(`Failed to logout`);
+             } else {
+                res.send(`Logout successful`);
+             }
+         })
+ });
+ //Psuedo code for managing messages.
+//  server.get('/api/messages', (req,res)=> {
+//        //check for session and user id
+//        db.findMessagesByuser(req.session.userId);
+//  })
 
 server.listen(3300, () => console.log('\nrunning on port 3300\n'));
