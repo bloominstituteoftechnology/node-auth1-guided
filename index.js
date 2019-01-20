@@ -5,6 +5,14 @@ const db = require('./database/dbHelpers.js');
 const server = express();
 const session = require('express-session');
 
+const protect = (req,res,next) => {
+   if(req.session && req.session.userId) {
+       next();
+   } else {
+      res.status(400).json({Message: `Access denied`});
+  }
+}
+
 server.use(express.json());
 server.use(cors());
 server.use(
@@ -62,25 +70,15 @@ server.post('/api/login', (req,res) => {
 });
 
 // protect this route, only authenticated users should see it
-server.get('/api/users', (req, res) => {
+server.get('/api/users', protect, (req, res) => {
     console.log('session', req.session);
-    if(req.session && req.session.userId) {
-           db.findUsers()
+    db.findUsers()
              .then( users => {
                 res.status(200).json(users)
              })
              .catch(err => {
                  res.status(500).json({errorMessage: err});
              })
-    } else {
-        res.status(400).json({Message: `Access denied`});
-    }
-   // db('users')
-   //   .select('id', 'username')
-   //   .then(users => {
-   //     res.json(users);
-   //   })
-   //   .catch(err => res.send(err));
  });
 
  server.post('/api/logout', (req,res) => {
