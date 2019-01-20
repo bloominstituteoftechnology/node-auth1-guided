@@ -3,9 +3,22 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const db = require('./database/dbHelpers.js');
 const server = express();
+const session = require('express-session');
 
 server.use(express.json());
 server.use(cors());
+server.use(
+   session({
+     name: 'notsession', // default is connect.sid
+     secret: 'nobody tosses a dwarf!',
+     cookie: {
+       maxAge: 1 * 24 * 60 * 60 * 1000       
+     }, // 1 day in milliseconds
+     httpOnly: true, // don't let JS code access cookies. Browser extensions run JS code on your browser!
+     resave: false,
+     saveUninitialized: false,
+   })
+ );
 
 server.get('/', (req, res) => {
   res.send('Its Alive!');
@@ -23,7 +36,7 @@ server.get('/api/users', (req, res) => {
 
 server.post('/api/register', (req,res) => {
     const user = req.body;
-    user.password = bcrypt.hashSync(user.password, 20);
+    user.password = bcrypt.hashSync(user.password, 10);
     if(!user) res.status(400).json({Message: `Please enter a valid user name and password`});
     console.log(user);
     db.insertUser(user)
