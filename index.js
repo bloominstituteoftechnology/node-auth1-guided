@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const db = require('./database/dbHelpers.js');
 const server = express();
 const session = require('express-session');
+const jwt = require('jsonwebtoken');
 
 const protect = (req,res,next) => {
    if(req.session && req.session.userId) {
