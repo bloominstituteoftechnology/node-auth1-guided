@@ -6,12 +6,43 @@ const server = express();
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
 
-const protect = (req,res,next) => {
-   if(req.session && req.session.userId) {
-       next();
-   } else {
-      res.status(400).json({Message: `Access denied`});
-  }
+const secret = "this is secret";
+
+const protected = (req,res,next) => {
+//    if(req.session && req.session.userId) {
+//        next();
+//    } else {
+//       res.status(400).json({Message: `Access denied`});
+//   }
+        // --> Read the token string from the Authorization header
+        const token = req.headers.authorization;
+        //verify the token
+        if(token) {    
+            jwt.verify(token, secret, (err, decodedToken) => {
+                  if(err) {
+                     //token is invalid
+                     res.status(401).json({Message: `Invalid Token`});
+                  } else {
+                     //token is valid
+                     req.username = decodedToken.username;
+                     next();
+                  }
+            });
+         } else {
+            res.status(401).json({Message:`No token provided`});
+         }   
+       
+}
+
+const generateToken = (user) => {
+     const payload = {username: user.username};
+    
+     const options = {
+        expiresIn: '1h',
+        jwtid: '12345'
+     }
+     const token = jwt.sign(payload, secret, options);
+      return token;
 }
 
 server.use(express.json());
@@ -43,8 +74,18 @@ server.post('/api/register', (req,res) => {
     console.log(user);
     db.insertUser(user)
     .then( ids => {
-       console.log('line31:',ids);
-       res.status(201).json({id:ids[0]});
+        const id = ids[0];
+        //Find the user using the id
+          db.findUserById(id)
+            .then(user => {
+                const token =  generateToken(user.username); 
+                console.log('line31:',ids);
+                res.status(201).json({id:user.id, token});
+            })
+            .catch(err => {
+                res.status(500).send(err);
+            })
+             
     }).catch(err => {
        res.status(500).json({Message: `Failed to register at this time`});
     })
@@ -55,13 +96,16 @@ server.post('/api/login', (req,res) => {
     db.findByUsername(userBody.username)
     .then( users => {
        if(users.length && bcrypt.compareSync(userBody.password, users[0].password)) {
-          req.session.userId = users[0].id;
+         //   req.session.userId = users[0].id;
           //redirect to the login screen
           // we send back  info that allows the front end  to display a new error message.
+          // Using JWT -> Generate a token
+          const token = generateToken(users);
+          // Attach that token to the response.
 
-          res.status(200).json({Message: `Correct`});
+          res.status(200).json({token});
        } else {
-          res.status(404).json({Message: `Invalid username and password`});
+          res.status(404).json({Message: `Invalid username and password - No access`});
        }
     })
     .catch(err => {
@@ -71,7 +115,7 @@ server.post('/api/login', (req,res) => {
 });
 
 // protect this route, only authenticated users should see it
-server.get('/api/users', protect, (req, res) => {
+server.get('/api/users', protected, (req, res) => {
     console.log('session', req.session);
     db.findUsers()
              .then( users => {

@@ -13,6 +13,10 @@ function findByUsername(username) {
 function findUsers() {
     return db('users').select('id', 'username');
 }
+
+function findUserById(id) {
+     return db('users').where({id}).first();
+}
 module.exports = {
-   insertUser, findByUsername, findUsers
+   insertUser, findByUsername, findUsers, findUserById
 }
