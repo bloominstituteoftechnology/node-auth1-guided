@@ -1,21 +1,21 @@
 {
-	"name": "authmini",
-	"version": "1.0.0",
-	"description": "Authentication Sprint Demo",
-	"main": "index.js",
-	"scripts": {
-		"server": "nodemon"
-	},
-	"keywords": [],
-	"author": "Lambda School",
-	"license": "MIT",
-	"dependencies": {
-		"cors": "^2.8.5",
-		"express": "^4.16.4",
-		"knex": "^0.15.2",
-		"sqlite3": "^4.0.4"
-	},
-	"devDependencies": {
-		"nodemon": "^1.18.6"
-	}
+  "name": "auth-i-guided",
+  "version": "1.0.0",
+  "description": "Authentication Sprint Guided Project",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon"
+  },
+  "keywords": [],
+  "author": "Lambda School",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "helmet": "^3.15.1",
+    "knex": "^0.16.3",
+    "sqlite3": "^4.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
 }
