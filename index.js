@@ -20,7 +20,7 @@ server.get("/", (req, res) => {
 server.post("/api/register", (req, res) => {
   const credentials = req.body;
 
-  const hash = bcrypt.hashSync(credentials.password, 10);
+  const hash = bcrypt.hashSync(credentials.password, 14);
   credentials.password = hash;
 
   db("users")
