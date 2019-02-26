@@ -35,7 +35,7 @@ server.post("/api/register", (req, res) => {
 });
 
 // Login
-server.post("/login", (req, res) => {
+server.post("/api/login", (req, res) => {
   const creds = req.body;
 
   db("users")
