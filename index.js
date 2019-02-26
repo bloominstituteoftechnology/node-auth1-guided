@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const bcrypt = require('bcryptjs')
 
 const db = require('./database/dbConfig.js');
 const Users = require('./users/users-module.js');
@@ -15,38 +16,41 @@ server.get('/', (req, res) => {
   res.send("It's alive!");
 });
 
+// Registration
 server.post('/api/register', (req, res) => {
-  let user = req.body;
-  // generate hash from user's password
-
-  // override user.password with hash
-
-  Users.add(user)
-    .then(saved => {
-      res.status(201).json(saved);
+  //grab username and password from body
+  const creds = req.body
+  //generate the hash from user's passowrd
+  const hash = bcrypt.hashSync(creds.password, 14) //rounds is 2^x
+  //override the user.password with the hash
+  creds.password = hash
+  //save user to the database
+  db('users')
+    .insert(creds)
+    .then(ids => {
+      res.status(201).json(ids)
     })
-    .catch(error => {
-      res.status(500).json(error);
-    });
-});
+    .catch(err => json(err))
+})
 
+// Login
 server.post('/api/login', (req, res) => {
-  let { username, password } = req.body;
-
-  Users.findBy({ username })
-    .first()
+  //grab username and password from body
+  const creds = req.body
+  db('users')
+    .where({ username: creds.username })
+    .first() //only get one record back
     .then(user => {
-      // check that passwords match
-      if (user) {
-        res.status(200).json({ message: `Welcome ${user.username}!` });
+      if (user && bcrypt.compareSync(creds.password, user.password)) {
+        //passwords match and user exists by that username
+        res.status(200).json({ message: 'Login Successful!' })
       } else {
-        res.status(401).json({ message: 'Invalid Credentials' });
+        // Either the username is invalid or password is wrong
+        res.status(401).json({ message: 'Thou shalt not pass!' })
       }
     })
-    .catch(error => {
-      res.status(500).json(error);
-    });
-});
+    .catch(err => res.json(err))
+})
 
 // protect this route, only authenticated users should see it
 server.get('/api/users', (req, res) => {
