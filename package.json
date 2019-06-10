@@ -1,7 +1,7 @@
 {
   "name": "auth-i-guided",
   "version": "1.0.0",
-  "description": "Authentication Sprint Guided Project",
+  "description": "Web Auth I Guided Project",
   "main": "index.js",
   "scripts": {
     "server": "nodemon index.js",
@@ -10,13 +10,14 @@
   "keywords": [],
   "author": "Lambda School",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "express": "^4.16.4",
+    "express": "^4.17.1",
     "helmet": "^3.18.0",
-    "knex": "^0.16.5",
-    "sqlite3": "^4.0.6"
+    "knex": "^0.17.5",
+    "sqlite3": "^4.0.8"
   },
   "devDependencies": {
-    "nodemon": "^1.19.0"
+    "nodemon": "^1.19.1"
   }
 }
