@@ -14,3 +14,5 @@ Guided project for **Web Auth I** Module.
 - [ ] type `npm run server` to start the API.
 
 Please follow along as the instructor adds authentication to the API.
+
+This is the first comment for commit!
