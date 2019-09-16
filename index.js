@@ -55,7 +55,19 @@ server.get('/api/users', (req, res) => {
       res.json(users);
     })
     .catch(err => res.send(err));
-});
+}); 
+
+// MiddleWare
+
+function validate(req ,res , next){  
+  const {username , password} = req.headers;
+  if(username && password){
+    return Users.find('users').where(user);
+  } 
+  else{
+    res.status(401).josn({message : "Invalid Cred"})
+  }
+}
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`\n** Running on port ${port} **\n`));
