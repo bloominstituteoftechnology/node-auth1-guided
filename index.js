@@ -1,6 +1,7 @@
-const express = require('express');
+const express = require('express'); 
 const helmet = require('helmet');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
 
 const db = require('./database/dbConfig.js');
 const Users = require('./users/users-model.js');
@@ -11,12 +12,16 @@ server.use(helmet());
 server.use(express.json());
 server.use(cors());
 
-server.get('/', (req, res) => {
-  res.send("It's alive!");
+server.get('/', (req, res) => { 
+  console.log(res);
+  res.send("It's alive!"); 
 });
 
 server.post('/api/register', (req, res) => {
-  let user = req.body;
+  let user = req.body; 
+
+  const hash = bcrypt.hashSync(user.name , 12);
+  user.name = hash; 
 
   Users.add(user)
     .then(saved => {
