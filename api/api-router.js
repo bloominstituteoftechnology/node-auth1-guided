@@ -14,19 +14,12 @@ router.get("/", (req, res) => {
 
 router.post("/hash", (req, res) => {
   // read a password from the body
+  const password = req.body.password;
   // hash the password using bcryptjs
+  const hash = bcrypt.hashSync(password, 8);
   // return it to the user in an objet that looks like
   // { password: 'original password, hash: 'hashed password'}
-  const password = req.body.password;
-  bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(password, salt, function(err, hash) {
-      // Store hash in your password DB.
-      res.status(200).json({
-        password: password,
-        hash: hash
-      });
-    });
-  });
+  res.status(200).json({ password, hash });
 });
 
 module.exports = router;
