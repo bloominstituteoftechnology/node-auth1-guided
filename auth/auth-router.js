@@ -2,15 +2,19 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); // npm i jsonwebtoken
 
+
 const Users = require("../users/users-model");
+const secrets = require("../api/secrets");
 
 router.post("/register", (req, res) => {
   let user = req.body; // username, password
+
+  // rounds are 2 to the N times
   const rounds = process.env.HASH_ROUNDS || 8;
 
-// hash the creds.password
+// hash the user.password
   const lockdown = bcrypt.hashSync(user.password, rounds)
-// update the creds to use the hash
+// update the user to use the hash
   user.password = lockdown;
 // NEVER save the password in plain text
   
@@ -27,11 +31,12 @@ router.post("/login", (req, res) => {
 
   // search for the user using the username
   Users.findBy({ username })
-  .then(user => { // can also destructure with ([user])
+  .then(([user]) => { 
     // if we find the user also check if the passwords match
-    if(user && bcrypt.compareSync(password, user[0].password)){
+    if(user && bcrypt.compareSync(password, user.password)){
       // produce a token
       const token = generateToken(user)
+      
       // send the token to the client
       res.status(200).json({ message: `Welcome ${username}`, token})
     } else {
@@ -51,7 +56,7 @@ function generateToken(user){
     username: user.username
   }
   // the secret
-  const secret = process.env.JWT_SECRET || 'Secret 4 Dev Only';
+  const secret = secrets.jwtSecret;
 
   const options = {
     expiresIn: '1d'
