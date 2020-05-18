@@ -1,4 +1,4 @@
-const db = require("../database/dbConfig.js");
+const db = require("../database/connection.js");
 
 module.exports = {
   add,
@@ -22,7 +22,5 @@ async function add(user) {
 }
 
 function findById(id) {
-  return db("users")
-    .where({ id })
-    .first();
+  return db("users").where({ id }).first();
 }
