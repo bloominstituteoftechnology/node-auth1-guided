@@ -13,7 +13,7 @@ function cleanTables(knex) {
 exports.seed = function (knex) {
   if (knex.client.config.client === "sqlite3") {
     /* 
-      a recent version of SQLite3 broke knex-cleaner's functionality when foreign keys are on,
+      a recent version of SQLite3 broke knex-cleaner's functionality when foreign keys are enabled,
       so we're temporarily disabling foreign keys when running the seeds against SQLite3.
     */
     return knex.raw("PRAGMA foreign_keys = OFF;").then(() => cleanTables(knex));
