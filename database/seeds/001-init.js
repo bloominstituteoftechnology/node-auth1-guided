@@ -10,5 +10,7 @@ exports.seed = function (knex) {
     },
   ];
 
-  return knex("roles").insert(roles);
+  return knex("roles")
+    .insert(roles)
+    .then(() => console.log("\n== Seed data for roles table added. ==\n"));
 };
