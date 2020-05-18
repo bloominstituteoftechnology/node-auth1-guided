@@ -1,5 +1,5 @@
 exports.seed = function (knex) {
-  // 000-cleanup.js alread cleaned out all tables
+  // 000-cleanup.js already cleaned out all tables
 
   const users = [
     {
