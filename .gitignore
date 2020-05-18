@@ -1,6 +1,9 @@
 # Mac cruft
 .DS_Store
 
+# Allow Yarn Use
+package-lock.json
+
 # Logs
 logs
 *.log
