@@ -8,7 +8,8 @@ module.exports = {
 };
 
 function find() {
-  return db("users").select("id", "username").orderBy("id");
+  // return db("users").select("id", "username").orderBy("id");
+  return db("users").orderBy("id");
 }
 
 function findBy(filter) {
