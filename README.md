@@ -5,6 +5,7 @@ Guided project for **Node Auth 1** Module.
 ## Prerequisites
 
 - [SQLite Studio](https://sqlitestudio.pl/index.rvt?act=download) installed.
+- [Postman](https://www.postman.com/) installed.
 
 ## Project Setup
 
