@@ -11,7 +11,6 @@ const handle = action => evt => {
   }
   fetch(`/api/auth/${action}`, {
     method: 'POST',
-    mode: 'same-origin',
     headers: {
       'Content-Type': 'application/json'
     },
