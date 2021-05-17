@@ -120,3 +120,6 @@ dist
 
 # Removes database
 auth.db3
+
+VSCode debugger settings
+.vscode
