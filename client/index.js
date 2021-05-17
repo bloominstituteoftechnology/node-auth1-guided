@@ -3,8 +3,6 @@ const passwordInput = document.querySelector('#passwordInput')
 const registerBtn = document.querySelector('#registerBtn')
 const loginBtn = document.querySelector('#loginBtn')
 
-console.log(document.cookie)
-
 const handle = action => evt => {
   evt.preventDefault()
   const credentials = {
