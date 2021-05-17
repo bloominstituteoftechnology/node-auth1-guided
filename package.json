@@ -9,8 +9,6 @@
     "rollback": "knex migrate:rollback",
     "seed": "knex seed:run"
   },
-  "keywords": [],
-  "author": "Lambda School",
   "dependencies": {
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
