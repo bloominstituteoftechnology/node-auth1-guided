@@ -17,11 +17,11 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
-    "eslint": "^8.2.0",
+    "eslint": "^8.4.1",
     "nodemon": "^2.0.15"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LambdaSchool/node-auth1-guided.git"
+    "url": "git+https://github.com/bloominstituteoftechnology/node-auth1-guided.git"
   }
 }
