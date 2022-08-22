@@ -33,6 +33,11 @@ router.post('/login', async (req, res, next) => {
         // SELECT * FROM users WHERE username = 'whatever'
         const user = await Users.findBy('username', username);
 
+        if(user == null) {
+            next({ status: 401, message: `Invalid credentials!`});
+            return;
+        }
+
         if(bcrypt.compareSync(password, user.password)) {
             res.json({ message: `You are now logged in, ${username}!`});
         } else {
