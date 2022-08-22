@@ -3,7 +3,7 @@ const router = require("express").Router()
 const Users = require("./users-model.js")
 
 function mustBeLoggedIn(req, res, next) {
-  if(req.session) {
+  if(req.session.user) {
     next();
   } else {
     res.status(403).json({ message: 'forbidden!' });
