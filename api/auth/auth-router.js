@@ -26,17 +26,18 @@ router.post('/register', usernameIsUnique, async (req, res, next) => {
     }
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     try {
         const { username, password } = req.body;
 
         // SELECT * FROM users WHERE username = 'whatever'
-        // Users.findBy('username', username)
+        const user = await Users.findBy('username', username);
 
-
-        const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
-
-        res.json(query);
+        if(bcrypt.compareSync(password, user.password)) {
+            res.json({ message: `You are now logged in, ${username}!`});
+        } else {
+            next({ status: 401, message: `Invalid credentials!`});
+        }
 
     } catch(err) {
         next(err);
