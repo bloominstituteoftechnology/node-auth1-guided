@@ -12,6 +12,7 @@ function find() {
 }
 
 function findBy(filter) {
+  // SELECT * FROM users WHERE key = 'value' AND key2 = 'value2' ...
   return db('users').where(filter)
 }
 
