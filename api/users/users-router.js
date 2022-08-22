@@ -10,6 +10,10 @@ router.get("/", (req, res, next) => {
     .catch(next)
 })
 
+router.get('/userinfo', (req, res) => {
+  res.status(200).json(req.session.user);
+})
+
 router.get('/number/:n', (req, res) => {
   res.status(200).json(req.session.number);
 
