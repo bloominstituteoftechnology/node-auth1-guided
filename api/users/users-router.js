@@ -10,4 +10,10 @@ router.get("/", (req, res, next) => {
     .catch(next)
 })
 
+router.get('/number/:n', (req, res) => {
+  res.status(200).json(req.session.number);
+
+  req.session.number = req.params.n;
+})
+
 module.exports = router
