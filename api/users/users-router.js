@@ -15,9 +15,9 @@ router.get('/userinfo', (req, res) => {
 })
 
 router.get('/number/:n', (req, res) => {
-  res.status(200).json(req.session.number);
-
+  const n = req.session.number;
   req.session.number = req.params.n;
+  res.status(200).json(n);
 })
 
 module.exports = router
