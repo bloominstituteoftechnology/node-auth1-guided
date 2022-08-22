@@ -34,7 +34,7 @@ router.post('/login', (req, res, next) => {
         // Users.findBy('username', username)
 
 
-        const query = `SELECT * FROM users WHERE username = ${username} AND password = ${password}`;
+        const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
 
         res.json(query);
 
