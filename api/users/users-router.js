@@ -3,7 +3,7 @@ const router = require("express").Router()
 const Users = require("./users-model.js")
 
 function mustBeLoggedIn(req, res, next) {
-  if(isUserLoggedIn) {
+  if(req.session) {
     next();
   } else {
     res.status(403).json({ message: 'forbidden!' });
@@ -23,10 +23,10 @@ router.get('/userinfo', (req, res) => {
   res.status(200).json(req.session.user);
 })
 
-router.get('/number/:n', (req, res) => {
-  const n = req.session.number;
-  req.session.number = req.params.n;
-  res.status(200).json(n);
-})
+// router.get('/number/:n', (req, res) => {
+//   const n = req.session.number;
+//   req.session.number = req.params.n;
+//   res.status(200).json(n);
+// })
 
 module.exports = router
