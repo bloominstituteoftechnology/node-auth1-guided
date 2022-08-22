@@ -2,7 +2,16 @@ const router = require("express").Router()
 
 const Users = require("./users-model.js")
 
-router.get("/", (req, res, next) => {
+function mustBeLoggedIn(req, res, next) {
+  if(isUserLoggedIn) {
+    next();
+  } else {
+    res.status(403).json({ message: 'forbidden!' });
+  }
+}
+
+
+router.get("/", mustBeLoggedIn, (req, res, next) => {
   Users.find()
     .then(users => {
       res.status(200).json(users)
