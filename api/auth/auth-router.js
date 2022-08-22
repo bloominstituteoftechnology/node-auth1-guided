@@ -26,7 +26,22 @@ router.post('/register', usernameIsUnique, async (req, res, next) => {
     }
 });
 
-// router.post('/login', (req, res) => {});
+router.post('/login', (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+
+        // SELECT * FROM users WHERE username = 'whatever'
+        // Users.findBy('username', username)
+
+
+        const query = `SELECT * FROM users WHERE username = ${username} AND password = ${password}`;
+
+        res.json(query);
+
+    } catch(err) {
+        next(err);
+    }
+});
 
 // router.get('/logout', (req, res) => {});
 
